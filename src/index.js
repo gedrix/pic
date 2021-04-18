@@ -1,6 +1,8 @@
 const express =  require('express');
 const morgan = require('morgan');
 const multer = require('multer');
+//const uuid = require('uuid/dist/v4');
+const { v4: uuidv4 } = require('uuid');
 
 const path = require('path');
 
@@ -15,7 +17,15 @@ app.set('port', process.env.PORT || 3000);
 //middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
-app.use(multer({dest: path.join(__dirname, 'public/images/publication')}).single('image'));
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, 'public/images/publication'),
+    filename: (req, file, cb, filename) => {
+        cb(null, uuidv4() + path.extname(file.originalname))
+    }
+});
+app.use(multer({
+    storage: storage  
+}).single('image'));
 
 
 //variales globales
