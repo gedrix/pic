@@ -1,9 +1,13 @@
-const { Router } = require('express');
+const { Router, response } = require('express');
 
 const router = Router();
+const Image = require('../models/Image');
 
-router.get('/', (req, res) => {
-    res.send('Pagina inicial');
+
+router.get('/', async (req, res) => {
+   // res.send('Pagina inicial');
+  const images=  await Image.find();
+  res.render('index', {images});
 });
 
 router.get('/cargar-imagen', (req, res) =>{
@@ -11,9 +15,19 @@ router.get('/cargar-imagen', (req, res) =>{
     res.render('cargar-imagen');
 });
 
-router.post('/cargar-imagen', (req, res) =>{
-    console.log(req.file);
-    res.send('correcto');
+router.post('/cargar-imagen', async(req, res) =>{
+    const image = new Image();
+    image.title = req.body.title;
+    image.description = req.body.description;
+    image.filename = req.file.filename;
+    image.path = '/images/publication/' + req.file.filename;
+    image.originalname = req.file.originalname;
+    image.mimetype = req.file.mimetype;
+    image.size = req.file.size;
+    await image.save();
+    //console.log(image);
+    //res.send('correcto');
+    res.redirect('/');
 
 });
 

@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 const app = express();
+require('./database');
 
 //configuracion
 app.set('views', path.join(__dirname, 'views'));
@@ -33,8 +34,9 @@ app.use(multer({
 
 //routes
 app.use(require('./routes/index'));
-//archivos estaticos
 
+//archivos estaticos
+app.use(express.static(path.join(__dirname, 'public')));
 
 //iniciar servidor
 app.listen(3000, ()=>{
