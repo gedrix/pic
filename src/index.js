@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const multer = require('multer');
 //const uuid = require('uuid/dist/v4');
 const { v4: uuidv4 } = require('uuid');
+const {format} = require ('timeago.js')
 
 const path = require('path');
 
@@ -30,7 +31,10 @@ app.use(multer({
 
 
 //variales globales
-
+app.use((req, res, next) => {
+    app.locals.format = format;
+    next();
+});
 
 //routes
 app.use(require('./routes/index'));
